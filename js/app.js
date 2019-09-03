@@ -18,7 +18,7 @@ document.addEventListener('click', () => {
     startScreen.style.display = 'none';
 });
 
-//Create a phrases array that contains at least 5 different phrases as strings.
+// Create a phrases array that contains at least 5 different phrases as strings.
     // No special punctuation
 
 const phrases = [
@@ -29,3 +29,16 @@ const phrases = [
     'why you buying',
     'you can read minds',
 ];
+
+// Create a getRandomPhraseAsArray function.
+    // This function should randomly choose a phrase from the phrases array and split that phrase into a new array of characters. The function should then return the new character array.
+function getRandomPhraseAsArray(arr) {
+    let num = Math.floor((Math.random() * arr.length));
+    let splitPhrase = arr[num].split('');
+    return splitPhrase;
+}
+
+// Set the game display.
+    // Create an addPhraseToDisplay function that loops through an array of characters. Inside the loop, for each character in the array, you’ll create a list item, put the character inside of the list item, and append that list item to the #phrase ul in your HTML. If the character in the array is a letter and not a space, the function should add the class “letter” to the list item.
+
+    // To use the function, you’ll get the value returned by the getRandomPhraseAsArray, save it to a variable, and pass it to addPhraseToDisplay as an argument:
