@@ -15,14 +15,14 @@ let missed = 0;
 // Create a phrases array that contains at least 5 different phrases as strings.
     // No special punctuation
 
-    const phrases = [
-        'two whole chickens and a coke',
-        'littering and',
-        'get me the freakin laser',
-        'you sold petey',
-        'why you buying',
-        'you can read minds',
-    ];
+const phrases = [
+    'two whole chickens and a coke',
+    'littering and',
+    'get me the freakin laser',
+    'you sold petey',
+    'why you buying',
+    'you can read minds',
+];
 
 
 //////////////////// START GAME /////////////////////
@@ -83,29 +83,11 @@ function addPhraseToDisplay(arr) {
     // If a match wasn’t found, the function should return null.
 function checkLetter(ch) {
     let letterArr = document.querySelectorAll('.letter');
-    // var checkedArr = [];
-    // letterArr.forEach( (l) => {
-    //     if (ch === l) {
-    //         checkedArr.push(l);
-    //         console.log(l);
-    //     }
-    // });
-    // checkedArr.forEach( (l) => {
-    //     l.classList.add('show');
-    // });
     for (let i = 0; i < letterArr.length; i++) {
         var checkedLetter;
         if (ch === letterArr[i].innerText) {
             letterArr[i].classList.add('show');
         }
-    
-
-    //         letterArr[i].classList.add('show');
-    //         checkedLetter = ch;
-    //         break;
-    // } else {
-    //     checkedLetter = null;
-    
     } 
     for (let i = 0; i < letterArr.length; i++) {
         if (ch === letterArr[i].innerText) {
@@ -134,6 +116,8 @@ function checkWin() {
     let showClassLetters = [];
     let letterClassLetters = [];
     let puzzleBoardUl = puzzleBoard.firstElementChild;
+    let keyButtons = document.querySelectorAll('.keyrow button');
+    let tries = document.querySelectorAll('.tries img');
     showClass.forEach( (l) => {
         showClassLetters.push(l);
     });
@@ -147,25 +131,40 @@ function checkWin() {
     } else if (overlayScreen.hasAttribute('class', 'lose')) {
         overlayScreen.classList.remove('lose');
     } 
-    if (showClassLetters.length > 0) {
+    if (showClassLetters.length > 0 || missed > 0) {
         if (showClassLetters.length === letterClassLetters.length) {
             overlayScreen.setAttribute('class', 'win');
             overlayScreen.style.display = '';
             startButton.innerText = 'Play Again';
+            missed = 0;
+            for (let i = 0; i < keyButtons.length; i++) {
+                keyButtons[i].removeAttribute('disabled');
+            }
+            
+            for (let i = 0; i < tries.length; i++) {
+                tries[i].setAttribute('src', 'images/liveHeart.png');
+            }  
             while (puzzleBoardUl.hasChildNodes()) {
                 puzzleBoardUl.removeChild(puzzleBoardUl.lastChild);
             }
-            missed = 0;
+            
             startButton.addEventListener('click', startGame);
         }
         if (missed === 5) {
             overlayScreen.setAttribute('class', 'lose');
             overlayScreen.style.display = '';
             startButton.innerText = 'Play Again';
+            missed = 0;
+            for (let i = 0; i < keyButtons.length; i++) {
+                keyButtons[i].removeAttribute('disabled');
+            }
+            for (let i = 0; i < tries.length; i++) {
+                tries[i].setAttribute('src', 'images/liveHeart.png');
+            } 
             while (puzzleBoardUl.hasChildNodes()) {
                 puzzleBoardUl.removeChild(puzzleBoardUl.lastChild);
             }
-            missed = 0;
+           
             startButton.addEventListener('click', startGame);
         }
     }
@@ -192,41 +191,3 @@ keyboard.addEventListener('click', (e) => {
 });
 
 
-// function checkWin() {
-//     let showClass = document.querySelectorAll('.show');
-//     let letterClass = document.querySelectorAll('.letter');
-//     let showClassLetters = [];
-//     let letterClassLetters = [];
-//     let puzzleBoardUl = puzzleBoard.firstElementChild;
-//     showClass.forEach( (l) => {
-//         showClassLetters.push(l);
-//     });
-//     letterClass.forEach( (l) => {
-//         letterClassLetters.push(l);
-//     });
-//     if (overlayScreen.hasAttribute('class', 'start')) {
-//         overlayScreen.classList.remove('start');
-//     } else if (overlayScreen.hasAttribute('class', 'win')) {
-//         overlayScreen.classList.remove('win');
-//     } else if (overlayScreen.hasAttribute('class', 'lose')) {
-//         overlayScreen.classList.remove('lose');
-//     } 
-//     if (showClassLetters.length > 0) {
-//         if (showClassLetters.length === letterClassLetters.length) {
-//             overlayScreen.setAttribute('class', 'win');
-//             overlayScreen.style.display = '';
-//             startButton.innerText = 'Play Again';
-//             for (let i = 0; i < puzzleBoardUl.length; i++) {
-//                 puzzleBoardUl.remo
-//             }
-//             startButton.addEventListener('click', startGame);
-//         }
-//         if (missed === 5) {
-//             overlayScreen.setAttribute('class', 'lose');
-//             overlayScreen.style.display = '';
-//             startButton.innerText = 'Play Again';
-//             startButton.addEventListener('click', startGame);
-//         }
-//     }
-    
-// }
