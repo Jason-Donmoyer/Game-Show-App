@@ -2,6 +2,8 @@
 
 // select starting screen
 const startScreen = document.querySelector('.start'); 
+// select overlay screen
+const overlayScreen = document.querySelector('#overlay');
 // start game button
 const startButton = document.querySelector('.btn__reset');
 // Get the element with the ID of qwerty and save it to a variable
@@ -10,27 +12,40 @@ const keyboard = document.querySelector('#qwerty');
 const puzzleBoard = document.querySelector('#phrase');
 // Create a missed variable, initialized to 0, that you’ll use later to keep track of the number of guesses the player has missed (remember, if the player guesses wrong 5 times, they lose the game)
 let missed = 0;
+// Create a phrases array that contains at least 5 different phrases as strings.
+    // No special punctuation
+
+    const phrases = [
+        'two whole chickens and a coke',
+        'littering and',
+        'get me the freakin laser',
+        'you sold petey',
+        'why you buying',
+        'you can read minds',
+    ];
+
 
 //////////////////// START GAME /////////////////////
 
 // Attach a event listener to the “Start Game” button to hide the start screen overlay.
-startButton.addEventListener('click', () => {
+startButton.addEventListener('click', startGame); //{
+    
+    // startScreen.style.display = 'none';
+    // let newPhrase = getRandomPhraseAsArray(phrases);
+    // addPhraseToDisplay(newPhrase);
+//});
+
+
+function startGame() {
     startScreen.style.display = 'none';
     let newPhrase = getRandomPhraseAsArray(phrases);
     addPhraseToDisplay(newPhrase);
-});
+    startButton.removeEventListener('click', startGame);
+}
 
-// Create a phrases array that contains at least 5 different phrases as strings.
-    // No special punctuation
+// startButton.removeEventListener('click', () => {});
 
-const phrases = [
-    'two whole chickens and a coke',
-    'littering and',
-    'get me the freakin laser',
-    'you sold petey',
-    'why you buying',
-    'you can read minds',
-];
+
 
 // Create a getRandomPhraseAsArray function.
     // This function should randomly choose a phrase from the phrases array and split that phrase into a new array of characters. The function should then return the new character array.
@@ -68,24 +83,150 @@ function addPhraseToDisplay(arr) {
     // If a match wasn’t found, the function should return null.
 function checkLetter(ch) {
     let letterArr = document.querySelectorAll('.letter');
-    var checkedLetter;
+    // var checkedArr = [];
+    // letterArr.forEach( (l) => {
+    //     if (ch === l) {
+    //         checkedArr.push(l);
+    //         console.log(l);
+    //     }
+    // });
+    // checkedArr.forEach( (l) => {
+    //     l.classList.add('show');
+    // });
     for (let i = 0; i < letterArr.length; i++) {
         var checkedLetter;
         if (ch === letterArr[i].innerText) {
             letterArr[i].classList.add('show');
+        }
+    
+
+    //         letterArr[i].classList.add('show');
+    //         checkedLetter = ch;
+    //         break;
+    // } else {
+    //     checkedLetter = null;
+    
+    } 
+    for (let i = 0; i < letterArr.length; i++) {
+        if (ch === letterArr[i].innerText) {
             checkedLetter = ch;
             break;
-    } else {
-        checkedLetter = null;
+        } else {
+            checkedLetter = null
+        }
     }
-} return checkedLetter;
+
+    return checkedLetter;
+
 }
 
 // Add an event listener to the keyboard.
     // Use event delegation to listen only to button events from the keyboard. When a player chooses a letter, add the “chosen” class to that button so the same letter can’t be chosen twice. Note that button elements have an attribute you can set called “disabled” that when set to true will not respond to user clicks.
-    // Pass the button to the checkLetter function, and store the letter returned inside of a variable called letterFound. At this point, you can open the index.html file, click any of the letters on the keyboard, and start to see the letters appear in the phrase.
+    // Pass the button to the checkLetter function
 
-const letterFound =[];
+// Create a checkWin function.
+    // Each time the player guesses a letter, this function will check whether the game has been won or lost. At the very end of the keyboard event listener, you’ll run this function to check if the number of letters with class “show” is equal to the number of letters with class “letters”. If they’re equal, show the overlay screen with the “win” class and appropriate text. Otherwise, if the number of misses is equal to or greater than 5, show the overlay screen with the “lose” class and appropriate text.
+    
+
+function checkWin() {
+    let showClass = document.querySelectorAll('.show');
+    let letterClass = document.querySelectorAll('.letter');
+    let showClassLetters = [];
+    let letterClassLetters = [];
+    let puzzleBoardUl = puzzleBoard.firstElementChild;
+    showClass.forEach( (l) => {
+        showClassLetters.push(l);
+    });
+    letterClass.forEach( (l) => {
+        letterClassLetters.push(l);
+    });
+    if (overlayScreen.hasAttribute('class', 'start')) {
+        overlayScreen.classList.remove('start');
+    } else if (overlayScreen.hasAttribute('class', 'win')) {
+        overlayScreen.classList.remove('win');
+    } else if (overlayScreen.hasAttribute('class', 'lose')) {
+        overlayScreen.classList.remove('lose');
+    } 
+    if (showClassLetters.length > 0) {
+        if (showClassLetters.length === letterClassLetters.length) {
+            overlayScreen.setAttribute('class', 'win');
+            overlayScreen.style.display = '';
+            startButton.innerText = 'Play Again';
+            while (puzzleBoardUl.hasChildNodes()) {
+                puzzleBoardUl.removeChild(puzzleBoardUl.lastChild);
+            }
+            missed = 0;
+            startButton.addEventListener('click', startGame);
+        }
+        if (missed === 5) {
+            overlayScreen.setAttribute('class', 'lose');
+            overlayScreen.style.display = '';
+            startButton.innerText = 'Play Again';
+            while (puzzleBoardUl.hasChildNodes()) {
+                puzzleBoardUl.removeChild(puzzleBoardUl.lastChild);
+            }
+            missed = 0;
+            startButton.addEventListener('click', startGame);
+        }
+    }
+    
+}
+
+
 keyboard.addEventListener('click', (e) => {
-    letterFound.push(checkLetter(e.target.innerText)); 
+    const letterFound = checkLetter(e.target.innerText);
+    e.target.setAttribute('disabled', true); 
+    console.log(letterFound);
+    
+    // Count the missed guesses in the game.
+    // Remove heart from game board.
+    if (letterFound === null) {
+        missed++;
+        let tries = document.querySelectorAll('.tries img');
+        for (let i = 0; i < missed; i++) {
+            tries[i].setAttribute('src', 'images/lostHeart.png');
+        }    
+    }
+    // Check for win or loss
+    checkWin();
 });
+
+
+// function checkWin() {
+//     let showClass = document.querySelectorAll('.show');
+//     let letterClass = document.querySelectorAll('.letter');
+//     let showClassLetters = [];
+//     let letterClassLetters = [];
+//     let puzzleBoardUl = puzzleBoard.firstElementChild;
+//     showClass.forEach( (l) => {
+//         showClassLetters.push(l);
+//     });
+//     letterClass.forEach( (l) => {
+//         letterClassLetters.push(l);
+//     });
+//     if (overlayScreen.hasAttribute('class', 'start')) {
+//         overlayScreen.classList.remove('start');
+//     } else if (overlayScreen.hasAttribute('class', 'win')) {
+//         overlayScreen.classList.remove('win');
+//     } else if (overlayScreen.hasAttribute('class', 'lose')) {
+//         overlayScreen.classList.remove('lose');
+//     } 
+//     if (showClassLetters.length > 0) {
+//         if (showClassLetters.length === letterClassLetters.length) {
+//             overlayScreen.setAttribute('class', 'win');
+//             overlayScreen.style.display = '';
+//             startButton.innerText = 'Play Again';
+//             for (let i = 0; i < puzzleBoardUl.length; i++) {
+//                 puzzleBoardUl.remo
+//             }
+//             startButton.addEventListener('click', startGame);
+//         }
+//         if (missed === 5) {
+//             overlayScreen.setAttribute('class', 'lose');
+//             overlayScreen.style.display = '';
+//             startButton.innerText = 'Play Again';
+//             startButton.addEventListener('click', startGame);
+//         }
+//     }
+    
+// }
