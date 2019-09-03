@@ -58,14 +58,6 @@ function addPhraseToDisplay(arr) {
         }
         puzzleBoardUl.appendChild(newListItem);
     }
-    // arr.forEach( (letter) => {
-    //     let newListItem = document.createElement('li');
-    //     newListItem.innerText = letter;
-    //     if (letter !== ' ') {
-    //         newListItem.classList.add('letter');
-    //     }
-    //     puzzleBoardUl.appendChild(newListItem);
-    // });   
 }
 
 //Create a checkLetter function.
@@ -88,24 +80,11 @@ function checkLetter(ch) {
     }
 } return checkedLetter;
 }
-// var checkedLetter;
-//     letterArr.forEach( (letter) => {
-        
-//         if (ch === letter.innerText) {
-//             letter.classList.add('show');
-//             checkedLetter = letter.innerText;
-//             break;
-//         } else {
-//             checkedLetter = null
-//         }   
-        
-//     }); 
-//     return checkedLetter;
-// }
+
 // Add an event listener to the keyboard.
     // Use event delegation to listen only to button events from the keyboard. When a player chooses a letter, add the “chosen” class to that button so the same letter can’t be chosen twice. Note that button elements have an attribute you can set called “disabled” that when set to true will not respond to user clicks.
     // Pass the button to the checkLetter function, and store the letter returned inside of a variable called letterFound. At this point, you can open the index.html file, click any of the letters on the keyboard, and start to see the letters appear in the phrase.
-    
+
 const letterFound =[];
 keyboard.addEventListener('click', (e) => {
     letterFound.push(checkLetter(e.target.innerText)); 
