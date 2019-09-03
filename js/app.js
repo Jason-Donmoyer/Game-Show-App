@@ -14,7 +14,6 @@ const puzzleBoard = document.querySelector('#phrase');
 let missed = 0;
 // Create a phrases array that contains at least 5 different phrases as strings.
     // No special punctuation
-
 const phrases = [
     'two whole chickens and a coke',
     'littering and',
@@ -23,29 +22,49 @@ const phrases = [
     'why you buying',
     'you can read minds',
 ];
+// ul in the #phrase div
+const puzzleBoardUl = puzzleBoard.firstElementChild;
+// buttons in the keyboard section
+const keyButtons = document.querySelectorAll('.keyrow button');
+// heart images
+const tries = document.querySelectorAll('.tries img');
 
 
-//////////////////// START GAME /////////////////////
+//////////////////// EVENT LISTENERS /////////////////////
 
 // Attach a event listener to the “Start Game” button to hide the start screen overlay.
-startButton.addEventListener('click', startGame); //{
+startButton.addEventListener('click', startGame); 
+
+// Add an event listener to the keyboard.
+    // Use event delegation to listen only to button events from the keyboard. When a player chooses a letter, add the “chosen” class to that button so the same letter can’t be chosen twice. Note that button elements have an attribute you can set called “disabled” that when set to true will not respond to user clicks.
+    // Pass the button to the checkLetter function
+keyboard.addEventListener('click', (e) => {
+    const letterFound = checkLetter(e.target.innerText);
+    e.target.setAttribute('disabled', true); 
+    console.log(letterFound);
     
-    // startScreen.style.display = 'none';
-    // let newPhrase = getRandomPhraseAsArray(phrases);
-    // addPhraseToDisplay(newPhrase);
-//});
+    // Count the missed guesses in the game.
+    // Remove heart from game board.
+    if (letterFound === null) {
+        missed++;
+        // removes one heart
+        for (let i = 0; i < missed; i++) {
+            tries[i].setAttribute('src', 'images/lostHeart.png');
+        }    
+    }
+    // Check for win or loss
+    checkWin();
+});
 
+//////////////////// FUNCTIONS /////////////////////
 
+// Creates new game board
 function startGame() {
     startScreen.style.display = 'none';
     let newPhrase = getRandomPhraseAsArray(phrases);
     addPhraseToDisplay(newPhrase);
     startButton.removeEventListener('click', startGame);
 }
-
-// startButton.removeEventListener('click', () => {});
-
-
 
 // Create a getRandomPhraseAsArray function.
     // This function should randomly choose a phrase from the phrases array and split that phrase into a new array of characters. The function should then return the new character array.
@@ -61,7 +80,6 @@ function getRandomPhraseAsArray(arr) {
        // To use the function, you’ll get the value returned by the getRandomPhraseAsArray, save it to a variable, and pass it to addPhraseToDisplay as an argument:
 
 function addPhraseToDisplay(arr) {
-    let puzzleBoardUl = puzzleBoard.firstElementChild;
     for (let i = 0; i < arr.length; i++) {
         let newListItem = document.createElement('li');
         if (arr[i] === ' ') {
@@ -97,33 +115,27 @@ function checkLetter(ch) {
             checkedLetter = null
         }
     }
-
     return checkedLetter;
-
 }
-
-// Add an event listener to the keyboard.
-    // Use event delegation to listen only to button events from the keyboard. When a player chooses a letter, add the “chosen” class to that button so the same letter can’t be chosen twice. Note that button elements have an attribute you can set called “disabled” that when set to true will not respond to user clicks.
-    // Pass the button to the checkLetter function
 
 // Create a checkWin function.
     // Each time the player guesses a letter, this function will check whether the game has been won or lost. At the very end of the keyboard event listener, you’ll run this function to check if the number of letters with class “show” is equal to the number of letters with class “letters”. If they’re equal, show the overlay screen with the “win” class and appropriate text. Otherwise, if the number of misses is equal to or greater than 5, show the overlay screen with the “lose” class and appropriate text.
-    
-
+   
 function checkWin() {
+    // variables to check for winning conditional statements
     let showClass = document.querySelectorAll('.show');
     let letterClass = document.querySelectorAll('.letter');
     let showClassLetters = [];
     let letterClassLetters = [];
-    let puzzleBoardUl = puzzleBoard.firstElementChild;
-    let keyButtons = document.querySelectorAll('.keyrow button');
-    let tries = document.querySelectorAll('.tries img');
+    // add item to array when correct letter is clicked
     showClass.forEach( (l) => {
         showClassLetters.push(l);
     });
+    // total array of letters in puzzle
     letterClass.forEach( (l) => {
         letterClassLetters.push(l);
     });
+    // clear class of the #overlay div
     if (overlayScreen.hasAttribute('class', 'start')) {
         overlayScreen.classList.remove('start');
     } else if (overlayScreen.hasAttribute('class', 'win')) {
@@ -131,63 +143,38 @@ function checkWin() {
     } else if (overlayScreen.hasAttribute('class', 'lose')) {
         overlayScreen.classList.remove('lose');
     } 
+    // check for winner
     if (showClassLetters.length > 0 || missed > 0) {
         if (showClassLetters.length === letterClassLetters.length) {
             overlayScreen.setAttribute('class', 'win');
-            overlayScreen.style.display = '';
-            startButton.innerText = 'Play Again';
-            missed = 0;
-            for (let i = 0; i < keyButtons.length; i++) {
-                keyButtons[i].removeAttribute('disabled');
-            }
-            
-            for (let i = 0; i < tries.length; i++) {
-                tries[i].setAttribute('src', 'images/liveHeart.png');
-            }  
-            while (puzzleBoardUl.hasChildNodes()) {
-                puzzleBoardUl.removeChild(puzzleBoardUl.lastChild);
-            }
-            
-            startButton.addEventListener('click', startGame);
+            restartGame();
         }
         if (missed === 5) {
             overlayScreen.setAttribute('class', 'lose');
-            overlayScreen.style.display = '';
-            startButton.innerText = 'Play Again';
-            missed = 0;
-            for (let i = 0; i < keyButtons.length; i++) {
-                keyButtons[i].removeAttribute('disabled');
-            }
-            for (let i = 0; i < tries.length; i++) {
-                tries[i].setAttribute('src', 'images/liveHeart.png');
-            } 
-            while (puzzleBoardUl.hasChildNodes()) {
-                puzzleBoardUl.removeChild(puzzleBoardUl.lastChild);
-            }
-           
-            startButton.addEventListener('click', startGame);
+            restartGame();
         }
-    }
-    
+    }  
 }
 
 
-keyboard.addEventListener('click', (e) => {
-    const letterFound = checkLetter(e.target.innerText);
-    e.target.setAttribute('disabled', true); 
-    console.log(letterFound);
-    
-    // Count the missed guesses in the game.
-    // Remove heart from game board.
-    if (letterFound === null) {
-        missed++;
-        let tries = document.querySelectorAll('.tries img');
-        for (let i = 0; i < missed; i++) {
-            tries[i].setAttribute('src', 'images/lostHeart.png');
-        }    
-    }
-    // Check for win or loss
-    checkWin();
-});
+// clears previous game board and restarts game onclick
+function restartGame() {
+    overlayScreen.style.display = '';
+        startButton.innerText = 'Play Again';
+        missed = 0;
+        for (let i = 0; i < keyButtons.length; i++) {
+            keyButtons[i].removeAttribute('disabled');
+        }
+        for (let i = 0; i < tries.length; i++) {
+            tries[i].setAttribute('src', 'images/liveHeart.png');
+        }  
+        while (puzzleBoardUl.hasChildNodes()) {
+            puzzleBoardUl.removeChild(puzzleBoardUl.lastChild);
+        }
+        startButton.addEventListener('click', startGame);
+}
+
+
+
 
 
