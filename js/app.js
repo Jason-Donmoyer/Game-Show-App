@@ -17,3 +17,15 @@ let missed = 0;
 document.addEventListener('click', () => {
     startScreen.style.display = 'none';
 });
+
+//Create a phrases array that contains at least 5 different phrases as strings.
+    // No special punctuation
+
+const phrases = [
+    'two whole chickens and a coke',
+    'littering and',
+    'get me the freakin laser',
+    'you sold petey',
+    'why you buying',
+    'you can read minds',
+];
