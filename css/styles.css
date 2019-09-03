@@ -34,6 +34,10 @@ li, ol, ul {
   display: inline-block;
 }
 
+.empty {
+  padding: .7em;
+}
+
 h2 {
   margin: 0;
   text-transform: uppercase;
@@ -83,6 +87,7 @@ button {
   width: 65px;
   padding: 20px 1px 0 1px;
   margin-right: 2px;
+  margin-bottom: 2px;
   color: transparent;
   background: var(--color-neutral-light);
   border-radius: 5px;
