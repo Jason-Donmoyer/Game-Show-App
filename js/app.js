@@ -21,6 +21,8 @@ const phrases = [
     'you sold petey',
     'why you buying',
     'you can read minds',
+    'mess with the bull you get the horns',
+    'do you see the light',
 ];
 // ul in the #phrase div
 const puzzleBoardUl = puzzleBoard.firstElementChild;
@@ -40,7 +42,8 @@ startButton.addEventListener('click', startGame);
     // Pass the button to the checkLetter function
 keyboard.addEventListener('click', (e) => {
     const letterFound = checkLetter(e.target.innerText);
-    e.target.setAttribute('disabled', true); 
+    e.target.setAttribute('disabled', true);
+    e.target.classList.add('chosen'); 
     console.log(letterFound);
     
     // Count the missed guesses in the game.
@@ -164,6 +167,7 @@ function restartGame() {
         missed = 0;
         for (let i = 0; i < keyButtons.length; i++) {
             keyButtons[i].removeAttribute('disabled');
+            keyButtons[i].classList.remove('chosen');
         }
         for (let i = 0; i < tries.length; i++) {
             tries[i].setAttribute('src', 'images/liveHeart.png');
