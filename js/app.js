@@ -43,7 +43,10 @@ startButton.addEventListener('click', startGame);
 keyboard.addEventListener('click', (e) => {
     const letterFound = checkLetter(e.target.innerText);
     e.target.setAttribute('disabled', true);
-    e.target.classList.add('chosen'); 
+    if (!e.target.hasAttribute('class', 'keyrow')) {
+        e.target.classList.add('chosen');
+    }
+     
     console.log(letterFound);
     
     // Count the missed guesses in the game.
