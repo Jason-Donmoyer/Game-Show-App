@@ -41,22 +41,24 @@ startButton.addEventListener('click', startGame);
     // Use event delegation to listen only to button events from the keyboard. When a player chooses a letter, add the “chosen” class to that button so the same letter can’t be chosen twice. Note that button elements have an attribute you can set called “disabled” that when set to true will not respond to user clicks.
     // Pass the button to the checkLetter function
 keyboard.addEventListener('click', (e) => {
-    const letterFound = checkLetter(e.target.innerText);
-    e.target.setAttribute('disabled', true);
-    if (!e.target.hasAttribute('class', 'keyrow')) {
-        e.target.classList.add('chosen');
-    }
-     
-    console.log(letterFound);
-    
-    // Count the missed guesses in the game.
-    // Remove heart from game board.
-    if (letterFound === null) {
-        missed++;
-        // removes one heart
-        for (let i = 0; i < missed; i++) {
-            tries[i].setAttribute('src', 'images/lostHeart.png');
-        }    
+    if (e.target.nodeName === 'BUTTON') {
+        const letterFound = checkLetter(e.target.innerText);
+        e.target.setAttribute('disabled', true);
+        if (!e.target.hasAttribute('class', 'keyrow')) {
+            e.target.classList.add('chosen');
+        }
+        
+        console.log(letterFound);
+        
+        // Count the missed guesses in the game.
+        // Remove heart from game board.
+        if (letterFound === null) {
+            missed++;
+            // removes one heart
+            for (let i = 0; i < missed; i++) {
+                tries[i].setAttribute('src', 'images/lostHeart.png');
+            }    
+        }
     }
     // Check for win or loss
     checkWin();
@@ -170,7 +172,7 @@ function restartGame() {
         missed = 0;
         for (let i = 0; i < keyButtons.length; i++) {
             keyButtons[i].removeAttribute('disabled');
-            keyButtons[i].classList.remove('chosen');
+            keyButtons[i].removeAttribute('class');
         }
         for (let i = 0; i < tries.length; i++) {
             tries[i].setAttribute('src', 'images/liveHeart.png');
